@@ -16,6 +16,11 @@ local g = vim.g
 g.mapleader = " "
 g.maplocalleader = "\\"
 
+g.loaded_node_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_ruby_provider = 0
+
 local opt = vim.opt
 
 opt.clipboard = "unnamedplus"
@@ -76,7 +81,9 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
 require("lazy").setup({
     defaults = {
         lazy = true,
+        version = "*",
     },
+    rocks = { enabled = false },
     spec = {
         {
             "folke/lazydev.nvim",
@@ -194,6 +201,9 @@ require("lazy").setup({
         { -- nvim-lspconfig
             "neovim/nvim-lspconfig",
             lazy = false,
+            init = function()
+                vim.lsp.set_log_level("off")
+            end,
             config = function(_, opts)
                 local lspconfig = require('lspconfig')
 
