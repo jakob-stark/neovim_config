@@ -272,78 +272,56 @@ require("lazy").setup({
                 "hrsh7th/cmp-nvim-lsp-signature-help",
                 "hrsh7th/cmp-buffer",
                 "hrsh7th/cmp-path",
-                "saadparwaiz1/cmp_luasnip",
-                "L3MON4D3/LuaSnip",
-                -- "rafamadriz/friendly-snippets",
             },
             opts = function()
                 local cmp = require("cmp")
-                local luasnip = require('luasnip')
                 local function has_words_before()
                     local line, col = (unpack or table.unpack)(vim.api.nvim_win_get_cursor(0))
                     return col ~= 0 and
                         vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
                 end
-                local function confirm_if_single()
-                    if false and #cmp.get_entries() == 1 then
-                        cmp.confirm({ select = true })
-                        return true
-                    else
-                        return false
-                    end
-                end
                 return {
                     sources = {
                         { name = 'nvim_lsp_signature_help', priority = 1100, },
                         { name = 'nvim_lsp',                priority = 1000, },
-                        { name = 'luasnip',                 priority = 750, },
+                        -- { name = 'snippets',                priority = 750, },
                         { name = 'buffer',                  priority = 500,  group_index = 2, },
                         { name = 'path',                    priority = 250, },
                     },
                     snippet = {
                         expand = function(args)
-                            luasnip.lsp_expand(args.body)
+                            vim.snippet.expand(args.body)
                         end,
                     },
+                    confirm_opts = {
+                        behavior = cmp.ConfirmBehavior.Replace,
+                        select = false,
+                    },
+                    preselect = cmp.PreselectMode.None,
                     mapping = {
                         ["<Up>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Select },
                         ["<Down>"] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Select },
-                        ["<CR>"] = cmp.mapping(function(fallback)
+                        ["<CR>"] = cmp.mapping.confirm { select = false },
+                        ["<Tab>"] = cmp.mapping(function(fallback)
                             if cmp.visible() then
-                                if luasnip.expandable() then
-                                    luasnip.expand()
-                                else
-                                    cmp.confirm { select = true }
-                                end
+                                cmp.select_next_item()
+                            elseif vim.snippet and vim.snippet.active { direction = 1 } then
+                                vim.schedule(function() vim.snippet.jump(1) end)
+                            elseif has_words_before() then
+                                cmp.complete()
                             else
                                 fallback()
                             end
                         end),
-                        ["<Tab>"] = cmp.mapping(function(fallback)
-                            if cmp.visible() then
-                                if not confirm_if_single() then
-                                    cmp.select_next_item()
-                                end
-                            elseif luasnip.locally_jumpable(1) then
-                                luasnip.jump(1)
-                            elseif has_words_before() then
-                                cmp.complete()
-                                confirm_if_single()
-                            else
-                                fallback()
-                            end
-                        end, { "i", "s" }),
                         ["<S-Tab>"] = cmp.mapping(function(fallback)
                             if cmp.visible() then
-                                if not confirm_if_single() then
-                                    cmp.select_prev_item()
-                                end
-                            elseif luasnip.locally_jumpable(-1) then
-                                luasnip.jump(-1)
+                                cmp.select_prev_item()
+                            elseif vim.snippet and vim.snippet.active { direction = -1 } then
+                                vim.schedule(function() vim.snippet.jump(-1) end)
                             else
                                 fallback()
                             end
-                        end, { "i", "s", }),
+                        end),
                     },
                 }
             end,
