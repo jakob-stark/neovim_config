@@ -272,12 +272,14 @@ require("lazy").setup({
         },
         { -- nvim-cmp (autocompletion + snippets)
             "hrsh7th/nvim-cmp",
+            branch = "main",
             event = "InsertEnter",
             dependencies = {
-                "hrsh7th/cmp-nvim-lsp",
-                "hrsh7th/cmp-nvim-lsp-signature-help",
-                "hrsh7th/cmp-buffer",
-                "hrsh7th/cmp-path",
+                { "hrsh7th/cmp-nvim-lsp",                branch = "main" },
+                { "hrsh7th/cmp-nvim-lsp-signature-help", branch = "main" },
+                { "hrsh7th/cmp-buffer",                  branch = "main" },
+                { "hrsh7th/cmp-path",                    branch = "main" },
+                { "garymjr/nvim-snippets",               branch = "main" , config=true},
             },
             opts = function()
                 local cmp = require("cmp")
@@ -290,7 +292,7 @@ require("lazy").setup({
                     sources = {
                         { name = 'nvim_lsp_signature_help', priority = 1100, },
                         { name = 'nvim_lsp',                priority = 1000, },
-                        -- { name = 'snippets',                priority = 750, },
+                        { name = 'snippets',                priority = 1200, },
                         { name = 'buffer',                  priority = 500,  group_index = 2, },
                         { name = 'path',                    priority = 250, },
                     },
