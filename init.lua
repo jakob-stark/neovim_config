@@ -229,7 +229,40 @@ require("lazy").setup({
                 lspconfig.hls.setup {}
 
                 -- basedpyright-language-server
-                lspconfig.basedpyright.setup {}
+                lspconfig.basedpyright.setup {
+                    settings = {
+                        basedpyright = {
+                            analysis = {
+                                typeCheckingMode = "off",
+                            }
+                        }
+                    }
+                }
+
+                lspconfig.harper_ls.setup {
+                    filetypes = { "markdown" },
+                }
+
+                lspconfig.erlangls.setup {}
+
+                lspconfig.pylsp.setup = {
+                    settings = {
+                        pylsp = {
+                            plugins = {
+                                pycodestyle = {
+                                    maxLineLength = 127,
+                                },
+                                jedi_completion = { enabled = false, },
+                                rope_completion = { enabled = false, },
+                                yapf = { enabled = false, },
+                                pyflakes = { enabled = false, },
+                                pylint = { enabled = false, },
+                                mcabe = { enabled = false },
+                                flake8 = { enabled = false }
+                            }
+                        }
+                    },
+                }
             end,
         },
         { -- nvim-treesitter
@@ -279,7 +312,7 @@ require("lazy").setup({
                 { "hrsh7th/cmp-nvim-lsp-signature-help", branch = "main" },
                 { "hrsh7th/cmp-buffer",                  branch = "main" },
                 { "hrsh7th/cmp-path",                    branch = "main" },
-                { "garymjr/nvim-snippets",               branch = "main" , config=true},
+                { "garymjr/nvim-snippets",               branch = "main", config = true },
             },
             opts = function()
                 local cmp = require("cmp")

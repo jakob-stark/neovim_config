@@ -1,0 +1,12 @@
+{
+    "Insert VIAVI header": {
+        "prefix": ["header"],
+        "body": [
+            "# ----- B_HEADER -------------------------------------------------------",
+            "#  Copyright $CURRENT_YEAR VIAVI Solutions Inc.",
+            "#  Date of creation: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+            "#  Initial author: Jakob Stark",
+            "# ----- E_HEADER -------------------------------------------------------"
+        ]
+    }
+}

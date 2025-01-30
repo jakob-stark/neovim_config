@@ -1,0 +1,25 @@
+{
+    "Insert VIAVI header": {
+        "prefix": ["header"],
+        "body": [
+            "/*----- B_HEADER -------------------------------------------------------",
+            "   Copyright $CURRENT_YEAR VIAVI Solutions Inc.",
+            "   Date of creation: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+            "   Initial author: Jakob Stark",
+            "------- E_HEADER -----------------------------------------------------*/",
+            "",
+            "$0"
+        ]
+    },
+    "Insert header guard": {
+        "prefix": ["#ifndef", "guard"],
+        "body": [
+            "#ifndef $1_H_INCLUDED",
+            "#define $1_H_INCLUDED",
+            "",
+            "$0",
+            "",
+            "#endif"
+        ]
+    }
+}
