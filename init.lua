@@ -121,6 +121,15 @@ require("lazy").setup({
                 'nvim-tree/nvim-web-devicons',
                 'MunifTanjim/nui.nvim',
             },
+            opts = {
+                close_if_last_window = true,
+                filesystem = {
+                    follow_current_file = {
+                        enabled = true,
+                        leave_dirs_open = true,
+                    }
+                }
+            },
         },
         { -- which-key
             "folke/which-key.nvim",
