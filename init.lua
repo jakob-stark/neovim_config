@@ -96,6 +96,7 @@ require("lazy").setup({
             },
         },
         -- Basic stuff
+        { 'echasnovski/mini.icons', version = '*' },
         { -- better_escape
             "max397574/better-escape.nvim",
             lazy = false,
@@ -196,7 +197,6 @@ require("lazy").setup({
         },
         { -- telescope
             'nvim-telescope/telescope.nvim',
-            branch = '0.1.x',
             dependencies = {
                 { 'nvim-lua/plenary.nvim' },
                 {
@@ -205,6 +205,15 @@ require("lazy").setup({
                         require('telescope').load_extension('frecency')
                     end
                 }
+            },
+            opts = {
+                defaults = {
+                    mappings = {
+                        i = {
+                            ["<C-s>"] = "send_selected_to_qflist",
+                        },
+                    },
+                },
             },
         },
         { -- gitsigns
@@ -405,59 +414,70 @@ local diagnostic = vim.diagnostic
 local lsp = vim.lsp
 
 require('which-key').add({
-    { "<leader>f",  group = "telescope" },
-    { "<leader>ff", function() require('telescope.builtin').find_files() end,                                         desc = "Find Files" },
-    { "<leader>fg", function() require('telescope.builtin').live_grep() end,                                          desc = "Live Grep" },
-    { "<leader>fm", function() require('telescope.builtin').man_pages { sections = { "2", "3", "4", "6", "7" } } end, desc = "Man Pages" },
-    { "<leader>fo", function() require('telescope.builtin').oldfiles() end,                                           desc = "Old files" },
-    { "<leader>fh", function() require('telescope.builtin').help_tags() end,                                          desc = "Help tags" },
-    { "<leader>fs", function() require('telescope.builtin').lsp_document_symbols() end,                               desc = "Symbols" },
-    { "<leader>fr", function() require('telescope.builtin').lsp_references() end,                                     desc = "References" },
+    { "<leader>f",   group = "telescope" },
+    { "<leader>ff",  function() require('telescope.builtin').find_files() end,                                         desc = "Find Files" },
+    { "<leader>fg",  function() require('telescope.builtin').live_grep() end,                                          desc = "Live Grep" },
+    { "<leader>fm",  function() require('telescope.builtin').man_pages { sections = { "2", "3", "4", "6", "7" } } end, desc = "Man Pages" },
+    { "<leader>fo",  function() require('telescope.builtin').oldfiles() end,                                           desc = "Old files" },
+    { "<leader>fh",  function() require('telescope.builtin').help_tags() end,                                          desc = "Help tags" },
+    { "<leader>fs",  function() require('telescope.builtin').lsp_document_symbols() end,                               desc = "Symbols" },
+    { "<leader>fr",  function() require('telescope.builtin').lsp_references() end,                                     desc = "References" },
 
-    { "<leader>l",  group = "lsp" },
-    { "<leader>ld", diagnostic.open_float,                                                                            desc = "Hover diagnostic" },
-    { "<leader>ls", lsp.buf.hover,                                                                                    desc = "Hover symbol" },
-    { "<leader>la", lsp.buf.code_action,                                                                              desc = "Code action", },
+    { "<leader>l",   group = "lsp" },
+    { "<leader>ld",  diagnostic.open_float,                                                                            desc = "Hover diagnostic" },
+    { "<leader>ls",  lsp.buf.hover,                                                                                    desc = "Hover symbol" },
+    { "<leader>la",  lsp.buf.code_action,                                                                              desc = "Code action", },
     -- { "<leader>ll", lsp.codelens.run,      desc = "Code lens", },
-    { "<leader>lf", lsp.buf.format,                                                                                   desc = "Format buffer" },
-    { "<leader>lc", lsp.buf.rename,                                                                                   desc = "Rename symbol" },
-    { "<leader>lr", lsp.buf.references,                                                                               desc = "Show references" },
+    { "<leader>lf",  lsp.buf.format,                                                                                   desc = "Format buffer" },
+    { "<leader>lc",  lsp.buf.rename,                                                                                   desc = "Rename symbol" },
+    { "<leader>lr",  lsp.buf.references,                                                                               desc = "Show references" },
+    { "<leader>lg",  lsp.buf.declaration,                                                                              desc = "Goto declaration" },
+    -- { "<leader>lgg", lsp.buf.definition,                                                                               desc = "Goto definition" },
+    { "<leader>li",  lsp.buf.incoming_calls,                                                                           desc = "Show incoming calls" },
+    { "<leader>lo",  lsp.buf.outgoing_calls,                                                                           desc = "Show outgoing calls" },
 
-    { "<leader>g",  group = "git" },
-    { "<leader>gp", require('gitsigns').preview_hunk,                                                                 desc = "Preview hunk" },
-    { "<leader>gr", require('gitsigns').reset_hunk,                                                                   desc = "Reset hunk" },
-    { "<leader>gs", require('gitsigns').stage_hunk,                                                                   desc = "Stage hunk" },
-    { "<leader>gu", require('gitsigns').undo_stage_hunk,                                                              desc = "Unstage hunk" },
-    { "<leader>gl", require('gitsigns').blame_line,                                                                   desc = "Blame line" },
+    { "<leader>lt",  group = "lsp-telescope" },
+    { "<leader>ltd", function() require('telescope.builtin').diagnostics() end,                                        desc = "Diagnostics" },
+    { "<leader>ltr", function() require('telescope.builtin').lsp_references() end,                                     desc = "References" },
+    { "<leader>ltg", function() require('telescope.builtin').lsp_definitions() end,                                    desc = "Definitions" },
+    { "<leader>lti", function() require('telescope.builtin').lsp_incoming_calls() end,                                 desc = "Incoming calls" },
+    { "<leader>lto", function() require('telescope.builtin').lsp_outgoing_calls() end,                                 desc = "Outgoing calls" },
 
-    { "<leader>c",  group = "close" },
-    { "<leader>cb", vim.cmd.bdelete,                                                                                  desc = "Close buffer" },
-    { "<leader>cq", vim.cmd.cclose,                                                                                   desc = "Close quickfix" },
+    { "<leader>g",   group = "git" },
+    { "<leader>gp",  require('gitsigns').preview_hunk,                                                                 desc = "Preview hunk" },
+    { "<leader>gr",  require('gitsigns').reset_hunk,                                                                   desc = "Reset hunk" },
+    { "<leader>gs",  require('gitsigns').stage_hunk,                                                                   desc = "Stage hunk" },
+    { "<leader>gu",  require('gitsigns').undo_stage_hunk,                                                              desc = "Unstage hunk" },
+    { "<leader>gl",  require('gitsigns').blame_line,                                                                   desc = "Blame line" },
 
-    { "<leader>a",  function() require('aerial').toggle() end,                                                        desc = "Toggle symbols outline" },
-    { "<leader>e",  function() require('neo-tree.command').execute { toggle = true } end,                             desc = "Toggle explorer" },
+    { "<leader>c",   group = "close" },
+    { "<leader>cb",  vim.cmd.bdelete,                                                                                  desc = "Close buffer" },
+    { "<leader>cq",  vim.cmd.cclose,                                                                                   desc = "Close quickfix" },
+
+    { "<leader>a",   function() require('aerial').toggle() end,                                                        desc = "Toggle symbols outline" },
+    { "<leader>e",   function() require('neo-tree.command').execute { toggle = true } end,                             desc = "Toggle explorer" },
 
     -- { "<leader>d", group = "debug" },
     -- { "<leader>dc", dap.continue, desc = "Continue" },
     -- { "<leader>db", dap.toggle_breakpoint, desc = "Toggle breakpoint" },
 
-    { "[e",         function() diagnostic.goto_prev { severity = diagnostic.severity.ERROR } end,                     desc = "Prev error" },
-    { "]e",         function() diagnostic.goto_next { severity = diagnostic.severity.ERROR } end,                     desc = "Next error" },
+    { "[e",          function() diagnostic.goto_prev { severity = diagnostic.severity.ERROR } end,                     desc = "Prev error" },
+    { "]e",          function() diagnostic.goto_next { severity = diagnostic.severity.ERROR } end,                     desc = "Next error" },
 
-    { "[q",         vim.cmd.cprev,                                                                                    desc = "Prev quickfix" },
-    { "]q",         vim.cmd.cnext,                                                                                    desc = "Next quickfix" },
+    { "[q",          vim.cmd.cprev,                                                                                    desc = "Prev quickfix" },
+    { "]q",          vim.cmd.cnext,                                                                                    desc = "Next quickfix" },
 
-    { "[b",         vim.cmd.bprev,                                                                                    desc = "Prev buffer" },
-    { "]b",         vim.cmd.bnext,                                                                                    desc = "Next buffer" },
+    { "[b",          vim.cmd.bprev,                                                                                    desc = "Prev buffer" },
+    { "]b",          vim.cmd.bnext,                                                                                    desc = "Next buffer" },
 
-    { "[g",         "<C-o>",                                                                                          desc = "Prev location" },
-    { "]g",         "<C-i>",                                                                                          desc = "Next location" },
+    { "[g",          "<C-o>",                                                                                          desc = "Prev location" },
+    { "]g",          "<C-i>",                                                                                          desc = "Next location" },
 
-    { "[y",         function() require('aerial').prev() end,                                                          desc = "Prev symbol" },
-    { "]y",         function() require('aerial').next() end,                                                          desc = "Next symbol" },
+    { "[y",          function() require('aerial').prev() end,                                                          desc = "Prev symbol" },
+    { "]y",          function() require('aerial').next() end,                                                          desc = "Next symbol" },
 
-    { "[h",         require('gitsigns').prev_hunk,                                                                    desc = "Prev hunk" },
-    { "]h",         require('gitsigns').next_hunk,                                                                    desc = "Next hunk" },
+    { "[h",          require('gitsigns').prev_hunk,                                                                    desc = "Prev hunk" },
+    { "]h",          require('gitsigns').next_hunk,                                                                    desc = "Next hunk" },
 
-    { "ah",         require('gitsigns').select_hunk,                                                                  desc = "Select hunk",           mode = { 'o', 'x' } },
+    { "ah",          require('gitsigns').select_hunk,                                                                  desc = "Select hunk",           mode = { 'o', 'x' } },
 })
