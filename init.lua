@@ -281,6 +281,9 @@ require("lazy").setup({
                         }
                     },
                 }
+
+                -- rust-analyzer
+                lspconfig.rust_analyzer.setup {}
             end,
         },
         { -- nvim-treesitter
